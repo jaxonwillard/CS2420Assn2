@@ -1,6 +1,7 @@
 // ******************ERRORS********************************
 // Throws UnderflowException as appropriate
 
+import java.lang.reflect.Array;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,13 +163,56 @@ public class Tree<E extends Comparable<? super E>> {
      * @return count of number of nodes at specified level
      */
     public int nodesInLevel(int level) {
-        return 0; //nodesInLevel(root, level);
+        return nodesInLevel(root, level, 0, 0);
+    }
+
+    public int nodesInLevel(BinaryNode node, int level, int currLevel, int nodesNum){
+        if (level == 0){
+            return 1;
+        }
+        int toReturn = 0;
+        if (currLevel == level - 1){
+            if (node.right != null){
+                nodesNum++;
+            }
+            if (node.left != null){
+                nodesNum++;
+            }
+            return nodesNum;
+        }
+        if (node.right != null){
+            toReturn = toReturn + nodesInLevel(node.right, level, currLevel + 1, nodesNum);
+        }
+        if (node.left != null){
+            toReturn = toReturn + nodesInLevel(node.left, level, currLevel + 1, nodesNum);
+        }
+        return toReturn;
     }
 
     /**
      * Print all paths from root to leaves
      */
     public void printAllPaths() {
+        int[] nodePaths = new int[9000];
+        printAllPaths(root, nodePaths, 0);
+    }
+    private void printAllPaths(BinaryNode node, int[] nodePaths, int pathLen){
+        if (node == null){
+            System.out.println("Empty Tree");
+            return;}
+        nodePaths[pathLen] = node.element;
+        pathLen++;
+        if (node.left == null && node.right == null){
+            for (int i = 0; i < pathLen; i++){
+                System.out.print(nodePaths[i] + " ");
+            }
+            System.out.println(" ");}
+        if (node.left != null){
+            printAllPaths(node.left, nodePaths, pathLen);
+        }
+        if (node.right != null){
+            printAllPaths(node.right, nodePaths, pathLen);
+        }
 
     }
 
@@ -177,16 +221,62 @@ public class Tree<E extends Comparable<? super E>> {
      * @param maxLevel
      */
     public void byLevelZigZag(int maxLevel) {
+        byLevelZigZag(root, maxLevel, 0, new int[1000]);
+    }
+
+    private void byLevelZigZag(BinaryNode node, int maxLevel, int currLevel, int[] nodePaths){
+        // ODDS
+        if (currLevel % 2 != 0){
+            if (node.right != null){
+                System.out.print(node.right.element + " ");
+                byLevelZigZag(node.right, maxLevel, currLevel + 1, nodePaths);}
+            if (node.left != null){
+                System.out.print(node.left.element + " ");
+                byLevelZigZag(node.left, maxLevel, currLevel + 1, nodePaths);}
+        }
+        // EVENS
+        else{
+            if (node.left != null){
+                System.out.print(node.left.element + " ");
+            byLevelZigZag(node.left, maxLevel, currLevel + 1, nodePaths);}
+            if (node.right != null){
+                System.out.print(node.right.element + " ");
+                byLevelZigZag(node.right, maxLevel, currLevel + 1, nodePaths);}
+        }
+        if (node == root){
+        System.out.println(node.element);}
 
     }
 
+
+    private void byLevelZigZag(BinaryNode node){
+
+    }
     /**
      * Counts all non-null binary search trees embedded in tree
      * @return Count of embedded binary search trees
      */
     public Integer countBST() {
         if (root == null) return 0;
-        return -1;
+        return countBST(root, 0, true);
+    }
+
+    private Integer countBST(BinaryNode node,  int numTrees, Boolean isTree){
+        if (node.left != null && node.left.element >= node.element || node.right != null && node.right.element < node.element){
+        }
+        else{numTrees++;}
+        int toReturn = 0;
+        if(node.left != null && node.right != null){
+        toReturn = numTrees + countBST(node.left, numTrees, isTree) + countBST(node.right, numTrees, isTree);}
+        else if (node.left != null && node.right == null){
+            toReturn = numTrees + countBST(node.left, numTrees, isTree);
+        }
+        else if (node.left == null && node.right != null){
+            toReturn = numTrees + countBST(node.right, numTrees, isTree);
+        }
+        return toReturn;
+
+
     }
 
     /**
