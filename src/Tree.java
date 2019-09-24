@@ -1,6 +1,8 @@
 // ******************ERRORS********************************
 // Throws UnderflowException as appropriate
 
+import org.w3c.dom.Node;
+
 import java.lang.reflect.Array;
 import java.util.Random;
 import java.util.ArrayList;
@@ -65,7 +67,6 @@ public class Tree<E extends Comparable<? super E>> {
         }
     }
 
-
     /**
      * Create BST from Array
      * @param arr   List of elements to be added
@@ -78,7 +79,6 @@ public class Tree<E extends Comparable<? super E>> {
             bstInsert(arr[i]);
         }
     }
-
 
     /**
      * Change name of tree
@@ -102,7 +102,7 @@ public class Tree<E extends Comparable<? super E>> {
     }
 
     public String toString(BinaryNode node, String toReturn, String recLevel, String parentElement){
-        recLevel = recLevel + " ";
+        recLevel = recLevel + "-";
         if(parentElement == ""){
             parentElement = "no parent";
         }
@@ -132,7 +132,6 @@ public class Tree<E extends Comparable<? super E>> {
      * reverse left and right children recursively
      */
     public void flip(){
-//        System.out.println("\n\n\n\n");
         flip(root);
     }
 
@@ -166,6 +165,29 @@ public class Tree<E extends Comparable<? super E>> {
         return nodesInLevel(root, level, 0, 0);
     }
 
+    public int nodesInLevel(BinaryNode node, int level, int currLevel, int nodesNum){
+        if (level == 0){
+            return 1;
+        }
+        int toReturn = 0;
+        if (currLevel == level - 1){
+            if (node.right != null){
+                nodesNum++;
+            }
+            if (node.left != null){
+                nodesNum++;
+            }
+            return nodesNum;
+        }
+        if (node.right != null){
+            toReturn = toReturn + nodesInLevel(node.right, level, currLevel + 1, nodesNum);
+        }
+        if (node.left != null){
+            toReturn = toReturn + nodesInLevel(node.left, level, currLevel + 1, nodesNum);
+        }
+        return toReturn;
+    }
+
     /**
      * Counts all non-null binary search trees embedded in tree
      * @return Count of embedded binary search trees
@@ -195,30 +217,72 @@ public class Tree<E extends Comparable<? super E>> {
         return isTree;
     }
 
+    /**
+     * Remove all paths from tree that sum to less than given value
+//     * @param sum: minimum path sum allowed in final tree
+     */
 
-    public int nodesInLevel(BinaryNode node, int level, int currLevel, int nodesNum){
-        if (level == 0){
-            return 1;
-        }
-        int toReturn = 0;
-        if (currLevel == level - 1){
-            if (node.right != null){
-                nodesNum++;
-            }
-            if (node.left != null){
-                nodesNum++;
-            }
-            return nodesNum;
-        }
-        if (node.right != null){
-            toReturn = toReturn + nodesInLevel(node.right, level, currLevel + 1, nodesNum);
-        }
-        if (node.left != null){
-            toReturn = toReturn + nodesInLevel(node.left, level, currLevel + 1, nodesNum);
-        }
-        return toReturn;
+    public BinaryNode findMin(){return findMin(root);}
+
+    public BinaryNode findMin(BinaryNode minNode){
+        if (minNode.left == null){return minNode;}
+        return findMin(minNode.left);
     }
 
+    public void remove(Integer element){
+        if (find(element, root) == null){
+            System.out.println("Value (" + element + ") does not exist in tree.");
+            return;}
+
+        else{
+            BinaryNode node = find(element, root);
+            BinaryNode parentNode = node.parent;
+            if (node.left == null && node.right == null){
+                if (parentNode.right == node){parentNode.right = null;}
+                else{parentNode.left = null;}
+            }
+            else if (node.right != null && node.left != null){
+                BinaryNode rightMin = findMin(node.right);
+                BinaryNode rightMinRep = rightMin.right;
+                node.element = rightMin.element;
+
+                if (rightMin.parent.right == rightMin){rightMin.parent.right = rightMinRep;}
+                else {rightMin.parent.right = rightMinRep;}
+            }
+
+            else if (node.left != null && node.right == null){
+                if (parentNode.left == node){parentNode.left = node.left;}
+                else{parentNode.right = node.right;}
+            }
+            else{
+                if (parentNode.left == node){parentNode.left = node.left;}
+                else{parentNode.right = node.right;}
+            }
+        }
+    }
+
+    public BinaryNode find(int sum){return find(sum, root);}
+
+    private BinaryNode find(int x, BinaryNode t) {
+        curr = null;
+        if (t == null)
+            return null;
+//        int compareResult = x.compareTo(t.element);
+//        if (compareResult < 0)
+        if (x < t.element)
+            return find(x, t.left);
+        else if (x > t.element)
+            return find(x, t.right);
+        else {
+            curr = t;
+            return t;    // Match
+        }
+    }
+
+    public void pruneK(BinaryNode node, Integer[] nodePaths, int pathLen, int limit) {
+
+
+    }
     /**
      * Print all paths from root to leaves
      */
@@ -226,6 +290,7 @@ public class Tree<E extends Comparable<? super E>> {
         int[] nodePaths = new int[9000];
         printAllPaths(root, nodePaths, 0);
     }
+
     private void printAllPaths(BinaryNode node, int[] nodePaths, int pathLen){
         if (node == null){
             System.out.println("Empty Tree");
@@ -278,11 +343,9 @@ public class Tree<E extends Comparable<? super E>> {
 
     }
 
-
     private void byLevelZigZag(BinaryNode node){
 
     }
-
 
     /**
      * Insert into a bst tree; duplicates are allowed
@@ -301,13 +364,6 @@ public class Tree<E extends Comparable<? super E>> {
     public boolean contains(int item) {
 
         return bstContains(item, root);
-    }
-
-    /**
-     * Remove all paths from tree that sum to less than given value
-     * @param sum: minimum path sum allowed in final tree
-     */
-    public void pruneK(Integer sum) {
     }
 
     /**
@@ -339,9 +395,61 @@ public class Tree<E extends Comparable<? super E>> {
     /**
      * Balance the tree
      */
-    public void balanceTree() {
-        //root = balanceTree(root);
+    public int getHeight(){return getHeight(root);}
+
+    private int getHeight(BinaryNode node){
+        int leftHeight = -1;
+        int rightHeight = -1;
+        if (node.left != null){leftHeight = getHeight(node.left);}
+        if (node.right != null){rightHeight = getHeight(node.right);}
+        if (leftHeight > rightHeight){return leftHeight + 1;}
+        else{return rightHeight + 1;}
     }
+
+//    public boolean isNodeBalanced(){return isNodeBalanced(root);}
+
+    private boolean isNodeBalanced(BinaryNode node){
+        if ((getHeight(node.left) - getHeight(node.right) > 1 ||
+                (getHeight(node.left) - getHeight(node.right) > -1))){return false;}
+        else{return true;}
+    }
+
+    public void singleRight(){}
+
+    public void singleLeft(){}
+
+    public void doubleRight(){}
+
+    public void doubleLeft(){}
+
+    private void chooseRotation(BinaryNode node){
+        if (!(isNodeBalanced(node.left))){
+            if(!(isNodeBalanced(node.left.left))){singleRight();}
+        }
+    }
+
+    public void balanceTree(){//BinaryNode node) {
+//        root = balanceTree(root);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * In a BST, keep only nodes between range
@@ -393,7 +501,6 @@ public class Tree<E extends Comparable<? super E>> {
         return t;
     }
 
-
     /**
      * Internal method to find an item in a subtree.
      * This routine runs in O(log n) as there is only one recursive call that is executed and the work
@@ -421,7 +528,7 @@ public class Tree<E extends Comparable<? super E>> {
             return true;    // Match
         }
     }
-
+    public boolean bstContains(int x){return bstContains(x, root);}
 
     /**
      * Internal method to return a string of items in the tree in order
@@ -445,12 +552,15 @@ public class Tree<E extends Comparable<? super E>> {
 
 
 
+
+
     // Basic node stored in unbalanced binary  trees
     private static class BinaryNode {
         Integer element;            // The data in the node
         BinaryNode left;   // Left child
         BinaryNode right;  // Right child
         BinaryNode parent; //  Parent node
+        BinaryNode height;
 
         // Constructors
         BinaryNode(int theElement) {
@@ -478,6 +588,7 @@ public class Tree<E extends Comparable<? super E>> {
 
             return sb.toString();
         }
+
 
     }
 

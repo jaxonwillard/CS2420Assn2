@@ -35,7 +35,9 @@ final int SIZE = 8;
         Tree<Integer> treeB = new Tree<Integer>(v5, "TreeB", 3);
         Tree<Integer> treeC = new Tree<Integer>("TreeC");
 //        System.out.println(tree1.toString2());
-//        System.out.println(tree1.toString());
+        System.out.println(tree1.toString());
+        System.out.println(tree1.isNodeBalanced());
+//        tree1.remove(50);
 //        System.out.println(tree1.toString2());
 
 //        System.out.println(treeA.toString());
