@@ -63,9 +63,9 @@ final int SIZE = 8;
 //        System.out.print("Tree2 byLevelZigZag (3): ");
 //        tree2.byLevelZigZag(3);
 //        treeA.flip();
-        System.out.println(treeA.toString());
-        System.out.println("treeA Contains BST: " + treeA.countBST());
-//
+//        System.out.println(treeA.toString());
+//        System.out.println("treeA Contains BST: " + treeA.countBST());
+////
 //        System.out.println(treeB.toString());
 //        System.out.println("treeB Contains BST: " + treeB.countBST());
 //

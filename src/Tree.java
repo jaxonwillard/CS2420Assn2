@@ -166,6 +166,36 @@ public class Tree<E extends Comparable<? super E>> {
         return nodesInLevel(root, level, 0, 0);
     }
 
+    /**
+     * Counts all non-null binary search trees embedded in tree
+     * @return Count of embedded binary search trees
+     */
+    public String countBST(){
+        return countBST(root, "");
+    }
+    private String countBST(BinaryNode node, String returnString) {
+        if (node == root && countBST(node, true)){returnString = returnString + node.element + " ";}
+        if (node.left != null && countBST(node.left, true))//
+            returnString = returnString + node.left.element.toString() + " " + countBST(node.left, "");
+        if (node.right != null && countBST(node.right, true)){
+            returnString = returnString + node.right.element.toString() + " " + countBST(node.right, "");
+        }
+        return returnString;
+    }
+    private Boolean countBST(BinaryNode node, Boolean isTree){
+        if (node.left != null && node.left.element >= node.element || node.right != null && node.right.element
+                < node.element){
+            return false;
+        }
+        if (node.left != null){
+            isTree = countBST(node.left, isTree);}
+        if (node.right != null){
+            isTree = countBST(node.right, isTree);}
+
+        return isTree;
+    }
+
+
     public int nodesInLevel(BinaryNode node, int level, int currLevel, int nodesNum){
         if (level == 0){
             return 1;
@@ -202,8 +232,8 @@ public class Tree<E extends Comparable<? super E>> {
             return;}
         nodePaths[pathLen] = node.element;
         pathLen++;
-        if (node.left == null && node.right == null){
-            for (int i = 0; i < pathLen; i++){
+        if (node.left == null && node.right == null) {
+            for (int i = 0; i < pathLen; i++) {
                 System.out.print(nodePaths[i] + " ");
             }
             System.out.println(" ");}
@@ -252,32 +282,7 @@ public class Tree<E extends Comparable<? super E>> {
     private void byLevelZigZag(BinaryNode node){
 
     }
-    /**
-     * Counts all non-null binary search trees embedded in tree
-     * @return Count of embedded binary search trees
-     */
-    public Integer countBST() {
-        if (root == null) return 0;
-        return countBST(root, 0, true);
-    }
 
-    private Integer countBST(BinaryNode node,  int numTrees, Boolean isTree){
-        if (node.left != null && node.left.element >= node.element || node.right != null && node.right.element < node.element){
-        }
-        else{numTrees++;}
-        int toReturn = 0;
-        if(node.left != null && node.right != null){
-        toReturn = numTrees + countBST(node.left, numTrees, isTree) + countBST(node.right, numTrees, isTree);}
-        else if (node.left != null && node.right == null){
-            toReturn = numTrees + countBST(node.left, numTrees, isTree);
-        }
-        else if (node.left == null && node.right != null){
-            toReturn = numTrees + countBST(node.right, numTrees, isTree);
-        }
-        return toReturn;
-
-
-    }
 
     /**
      * Insert into a bst tree; duplicates are allowed
