@@ -58,7 +58,7 @@ final int SIZE = 8;
 //        }
 //        System.out.println("All paths from tree1");
 //        tree1.printAllPaths();
-
+//        System.out.println(tree2.toString());
 //        System.out.print("Tree1 byLevelZigZag: ");
 //        tree1.byLevelZigZag(5);
 //        System.out.print("Tree2 byLevelZigZag (3): ");
@@ -77,21 +77,21 @@ final int SIZE = 8;
 //        treeA.changeName("treeA after pruning 220");
 //        System.out.println(treeA.toString());
 
-//        treeC.buildTreeTraversals(inorder, preorder);
-//        treeC.changeName("Tree C built from inorder and preorder traversals");
-//        System.out.println(treeC.toString());
+        treeC.buildTreeTraversals(inorder, preorder);
+        treeC.changeName("Tree C built from inorder and preorder traversals");
+        System.out.println(treeC.toString());
 //
 //        System.out.println(tree1.toString());
 //        System.out.println("tree1 Least Common Ancestor of (56,61) " + tree1.lca(56, 61) + ENDLINE);
-//
+////
 //        System.out.println("tree1 Least Common Ancestor of (6,25) " + tree1.lca(6, 25) + ENDLINE);
 //        System.out.println(treeA.toString());
 //        System.out.println(treeA.isNodeBalanced(treeA.getRoot()));
 
-        System.out.println(tree3.toString());
-        tree3.balanceTree();
-        tree3.changeName("tree3 after balancing");
-        System.out.println(tree3.toString());
+//        System.out.println(tree3.toString());
+//        tree3.balanceTree();
+//        tree3.changeName("tree3 after balancing");
+//        System.out.println(tree3.toString());
 
 //        System.out.println(tree1.toString());
 //        tree1.keepRange(10, 50);

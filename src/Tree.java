@@ -102,7 +102,7 @@ public class Tree<E extends Comparable<? super E>> {
     }
 
     public String toString(BinaryNode node, String toReturn, String recLevel, String parentElement){
-        recLevel = recLevel + "-";
+        recLevel = recLevel + " ";
         if(parentElement == ""){
             parentElement = "no parent";
         }
@@ -315,43 +315,50 @@ public class Tree<E extends Comparable<? super E>> {
      * Print contents of levels in zig zag order starting at maxLevel
      * @param maxLevel
      */
-    public void byLevelZigZag(int maxLevel) {
-        byLevelZigZag(root, maxLevel, 0, new int[1000]);
-    }
 
-    private void byLevelZigZag(BinaryNode node, int maxLevel, int currLevel, int[] nodePaths){
-        // ODDS
-        if (currLevel % 2 != 0){
-            if (node.right != null){
-                System.out.print(node.right.element + " ");
-                byLevelZigZag(node.right, maxLevel, currLevel + 1, nodePaths);}
-            if (node.left != null){
-                System.out.print(node.left.element + " ");
-                byLevelZigZag(node.left, maxLevel, currLevel + 1, nodePaths);}
+    public  void byLevelZigZag(int maxLevel){byLevelZigZag(root, maxLevel);}
+
+    private void byLevelZigZag(BinaryNode node, int maxLevel){
+        boolean isEven = true;
+        int height = getHeight(node);
+        for (int i = 1; i <= height; i++){
+            if (isEven){
+                printEvens(node, i, maxLevel);
+                isEven = false;
+            }
+            else {
+                printOdds(node, i, maxLevel);
+                isEven = true;
+            }
         }
-        // EVENS
-        else{
-            if (node.left != null){
-                System.out.print(node.left.element + " ");
-            byLevelZigZag(node.left, maxLevel, currLevel + 1, nodePaths);}
-            if (node.right != null){
-                System.out.print(node.right.element + " ");
-                byLevelZigZag(node.right, maxLevel, currLevel + 1, nodePaths);}
-        }
-        if (node == root){
-        System.out.println(node.element);}
+        System.out.println(" ");
 
     }
 
-    private void byLevelZigZag(BinaryNode node){
+    private void printEvens(BinaryNode node, int currLevel, int maxLevel){
+        if (node == null){return;}
+        if(currLevel < maxLevel){
+            printEvens(node.right, currLevel + 1, maxLevel);
+            printEvens(node.left, currLevel + 1, maxLevel);
+        }
+        else if (currLevel == maxLevel){ System.out.print(node.element + " ");}
+    }
 
+    private void printOdds(BinaryNode node,int currLevel, int maxLevel){
+        if (node == null){return;}
+        if (currLevel < maxLevel){
+            printOdds(node.left, currLevel + 1, maxLevel);
+            printOdds(node.right, currLevel + 1, maxLevel);
+        }
+        else if (currLevel == maxLevel){
+            System.out.print(node.element + " ");}
     }
 
     /**
      * Insert into a bst tree; duplicates are allowed
      * @param x the item to insert.
      */
-    public void bstInsert(int x) {
+    private void bstInsert(int x) {
 
         root = bstInsert(x, root, null);
     }
@@ -366,14 +373,61 @@ public class Tree<E extends Comparable<? super E>> {
         return bstContains(item, root);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Build tree given inOrder and preOrder traversals.  Each value is unique
      * @param inOrder  List of tree nodes in inorder
      * @param preOrder List of tree nodes in preorder
      */
+
+    
+
     public void buildTreeTraversals(E[] inOrder, E[] preOrder) {
         root = null;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Find the least common ancestor of two nodes
@@ -381,16 +435,35 @@ public class Tree<E extends Comparable<? super E>> {
      * @param b second node
      * @return String representation of ancestor
      */
-    public String lca(E a, E b) {
-        BinaryNode ancestor = null;
-//        if (a.compareTo(b) < 0) {
-//            ancestor = lca(root, a, b);
-//        } else {
-//            ancestor = lca(root, b, a);
-//        }
-        if (ancestor == null) return "none";
-        else return ancestor.toString();
+    private BinaryNode lca(BinaryNode node, Integer a, Integer b) {
+//        if (!(bstContains(a)) && !(bstContains(b))){return null;}
+        if (!(bstContains(a))){return find(b);}
+        if (!bstContains(b)){return find(a);}
+
+        BinaryNode ancestor = node;
+        if (bstContains(a, node) && bstContains(b, node)) {
+            ancestor = node;
+        }
+        if (node.right != null && bstContains(a, node.right) && bstContains(b, node.right)) {
+            ancestor = lca(node.right, a, b);
+        }
+        if (node.left != null && bstContains(a, node.left) && bstContains(b, node.left)) {
+            ancestor = lca(node.left, a, b);
+        }
+        return ancestor;
     }
+
+    public String lca(int a, int b) {
+        if (lca(root, a, b) == null){return "Both values not found in tree.";}
+        else{return lca(root, a, b).element.toString();}
+    }
+//
+
+
+
+
+
+
 
     /**
      * Balance the tree
@@ -398,7 +471,7 @@ public class Tree<E extends Comparable<? super E>> {
     public int getHeight(){return getHeight(root);}
 
     /**
-     * WORKS!
+     * getHeight WORKS!
      */
     private int getHeight(BinaryNode node){
         int leftHeight = -1;
@@ -409,10 +482,6 @@ public class Tree<E extends Comparable<? super E>> {
         else{return rightHeight + 1;}
     }
 
-//    public boolean isNodeBalanced(){return isNodeBalanced(root);}
-
-    public BinaryNode getRoot(){return this.root;}
-
     public boolean isNodeBalanced(BinaryNode node){
 //        node = root.right;
 //        if (node == null){return true;}
@@ -422,7 +491,7 @@ public class Tree<E extends Comparable<? super E>> {
         else if(node.left == null && node.right != null){
             if (getHeight(node.right) > 1){return false;}
         }
-        else if(node.left != null && node.right == null){
+        else if(node.left != null){
             if (getHeight(node.left) > 1) {return false;}
         }
         return true;
@@ -450,27 +519,16 @@ public class Tree<E extends Comparable<? super E>> {
         node.left = singleLeft(node.left);
         return singleRight(node);
     }
+
     public BinaryNode doubleLeft(BinaryNode node){
         node.right = singleRight(node.right);
         return singleLeft(node);
     }
-    private void chooseRotation(BinaryNode node){
-        if (!(isNodeBalanced(node.left))){
-            if(!(isNodeBalanced(node.left.left))){singleRight(node);}
-            else{doubleRight(node);}
-        }
-        if (!(isNodeBalanced(node.right))) {
-            if (!(isNodeBalanced(node.right.right))) {
-                singleLeft(node);
-            } else {
-                doubleLeft(node);
-            }
-        }
-    }
 
-    public void balanceTree(BinaryNode node){
-//        root = balanceTree(root);
-        if (node == null){return;}
+    public BinaryNode balanceTree(BinaryNode node){
+        if (node.left == null && node.right == null){return node;}
+        else if (node.left != null && node.right == null){balanceTree(node.left);}
+        else if (node.left == null){balanceTree(node.right);}
 
         int nodeLeftHeight;
         int nodeRightHeight;
@@ -478,8 +536,6 @@ public class Tree<E extends Comparable<? super E>> {
         int nodeLeftRightHeight;
         int nodeRightRightHeight;
         int nodeRightLeftHeight;
-//        if (node.left == null){nodeLeftHeight = 0; nodeLeftLeftHeight = 0; nodeLeftRightHeight = 0;}else{nodeLeftHeight = node.left.height;}
-//        if (node.right == null){nodeRightHeight = 0; nodeRightRightHeight = 0; nodeRightLeftHeight = 0;}else{nodeRightHeight = node.right.height;}
         if (node.left != null){
             nodeLeftHeight = node.left.height;
             if (node.left.left == null){nodeLeftLeftHeight = 0;} else{nodeLeftLeftHeight = node.left.left.height;}
@@ -500,28 +556,26 @@ public class Tree<E extends Comparable<? super E>> {
             nodeRightRightHeight = 0;
             nodeRightLeftHeight = 0;
         }
-//        if (node.left != null && node.left.left == null){nodeLeftLeftHeight = 0;}else{nodeLeftLeftHeight = node.left.left.height;}
-//        if (node.left != null && node.left.right == null){nodeLeftRightHeight = 0;}else{nodeLeftRightHeight = node.left.right.height;}
-//        if (node.right != null && node.right.right == null){nodeRightRightHeight = 0;}else{nodeRightRightHeight = node.right.right.height;}
-//        if (node.right != null && node.right.left == null){nodeRightLeftHeight = 0;}else{nodeRightLeftHeight = node.right.left.height;}
 
         if (nodeLeftHeight - nodeRightHeight > 1 ){
             if (nodeLeftLeftHeight >= nodeLeftRightHeight){
-                node = singleRight(node);
+                root = singleRight(node);
             }
-            else{node = doubleLeft(node);}
+            else{root = doubleRight(node);}
         }
         else{
             if (nodeRightHeight - nodeLeftHeight > 1){
                 if (nodeRightRightHeight >= nodeRightLeftHeight){
-                    node = singleLeft(node);
+                    root = singleLeft(node);
                 }
                 else{
-                    node = doubleLeft(node);
+                    root = doubleLeft(node);
                 }
             }
         }
+//        root = balanceTree(root);
         updateHeights(root);
+        return node;
     }
 
     public void balanceTree(){balanceTree(root);}
@@ -691,14 +745,7 @@ public class Tree<E extends Comparable<? super E>> {
                 sb.append(parent.element);
                 sb.append(">");
             }
-
             return sb.toString();
         }
-
-
     }
-
-
-
-
 }
