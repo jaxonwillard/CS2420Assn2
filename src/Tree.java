@@ -397,6 +397,9 @@ public class Tree<E extends Comparable<? super E>> {
      */
     public int getHeight(){return getHeight(root);}
 
+    /**
+     * WORKS!
+     */
     private int getHeight(BinaryNode node){
         int leftHeight = -1;
         int rightHeight = -1;
@@ -408,37 +411,120 @@ public class Tree<E extends Comparable<? super E>> {
 
 //    public boolean isNodeBalanced(){return isNodeBalanced(root);}
 
-    private boolean isNodeBalanced(BinaryNode node){
-        if ((getHeight(node.left) - getHeight(node.right) > 1 ||
-                (getHeight(node.left) - getHeight(node.right) > -1))){return false;}
-        else{return true;}
+    public BinaryNode getRoot(){return this.root;}
+
+    public boolean isNodeBalanced(BinaryNode node){
+//        node = root.right;
+//        if (node == null){return true;}
+        if(node.left != null && node.right != null){
+            if ((getHeight(node.left) - getHeight(node.right) > 1 ||
+                (getHeight(node.left) - getHeight(node.right) > -1))){return false;}}
+        else if(node.left == null && node.right != null){
+            if (getHeight(node.right) > 1){return false;}
+        }
+        else if(node.left != null && node.right == null){
+            if (getHeight(node.left) > 1) {return false;}
+        }
+        return true;
     }
 
-    public void singleRight(){}
+    public BinaryNode singleRight(BinaryNode node){
+        BinaryNode leftNode = node.left;
+        node.left = leftNode.right;
+        leftNode.right = node;
+        node.height = getHeight(node);
+        leftNode.height = getHeight(node);
+        return leftNode;
+    }
 
-    public void singleLeft(){}
+    public BinaryNode singleLeft(BinaryNode node){
+        BinaryNode rightNode = node.right;
+        node.right = rightNode.left;
+        rightNode.left = node;
+        node.height = getHeight(node);
+        rightNode.height = getHeight(node);
+        return rightNode;
+    }
 
-    public void doubleRight(){}
-
-    public void doubleLeft(){}
-
+    public BinaryNode doubleRight(BinaryNode node){
+        node.left = singleLeft(node.left);
+        return singleRight(node);
+    }
+    public BinaryNode doubleLeft(BinaryNode node){
+        node.right = singleRight(node.right);
+        return singleLeft(node);
+    }
     private void chooseRotation(BinaryNode node){
         if (!(isNodeBalanced(node.left))){
-            if(!(isNodeBalanced(node.left.left))){singleRight();}
+            if(!(isNodeBalanced(node.left.left))){singleRight(node);}
+            else{doubleRight(node);}
+        }
+        if (!(isNodeBalanced(node.right))) {
+            if (!(isNodeBalanced(node.right.right))) {
+                singleLeft(node);
+            } else {
+                doubleLeft(node);
+            }
         }
     }
 
-    public void balanceTree(){//BinaryNode node) {
+    public void balanceTree(BinaryNode node){
 //        root = balanceTree(root);
+        if (node == null){return;}
+
+        int nodeLeftHeight;
+        int nodeRightHeight;
+        int nodeLeftLeftHeight;
+        int nodeLeftRightHeight;
+        int nodeRightRightHeight;
+        int nodeRightLeftHeight;
+//        if (node.left == null){nodeLeftHeight = 0; nodeLeftLeftHeight = 0; nodeLeftRightHeight = 0;}else{nodeLeftHeight = node.left.height;}
+//        if (node.right == null){nodeRightHeight = 0; nodeRightRightHeight = 0; nodeRightLeftHeight = 0;}else{nodeRightHeight = node.right.height;}
+        if (node.left != null){
+            nodeLeftHeight = node.left.height;
+            if (node.left.left == null){nodeLeftLeftHeight = 0;} else{nodeLeftLeftHeight = node.left.left.height;}
+            if (node.left.right == null){nodeLeftRightHeight = 0;} else{nodeLeftRightHeight = node.left.right.height;}
+        }
+        else {
+            nodeLeftHeight = 0;
+            nodeLeftLeftHeight = 0;
+            nodeLeftRightHeight = 0;
+        }
+        if (node.right != null){
+            nodeRightHeight = node.right.height;
+            if (node.right.right == null){nodeRightRightHeight = 0;} else{nodeRightRightHeight = node.right.right.height;}
+            if (node.right.left == null){nodeRightLeftHeight = 0;} else{nodeRightLeftHeight = node.right.left.height;}
+        }
+        else{
+            nodeRightHeight = 0;
+            nodeRightRightHeight = 0;
+            nodeRightLeftHeight = 0;
+        }
+//        if (node.left != null && node.left.left == null){nodeLeftLeftHeight = 0;}else{nodeLeftLeftHeight = node.left.left.height;}
+//        if (node.left != null && node.left.right == null){nodeLeftRightHeight = 0;}else{nodeLeftRightHeight = node.left.right.height;}
+//        if (node.right != null && node.right.right == null){nodeRightRightHeight = 0;}else{nodeRightRightHeight = node.right.right.height;}
+//        if (node.right != null && node.right.left == null){nodeRightLeftHeight = 0;}else{nodeRightLeftHeight = node.right.left.height;}
+
+        if (nodeLeftHeight - nodeRightHeight > 1 ){
+            if (nodeLeftLeftHeight >= nodeLeftRightHeight){
+                node = singleRight(node);
+            }
+            else{node = doubleLeft(node);}
+        }
+        else{
+            if (nodeRightHeight - nodeLeftHeight > 1){
+                if (nodeRightRightHeight >= nodeRightLeftHeight){
+                    node = singleLeft(node);
+                }
+                else{
+                    node = doubleLeft(node);
+                }
+            }
+        }
+        updateHeights(root);
     }
 
-
-
-
-
-
-
-
+    public void balanceTree(){balanceTree(root);}
 
 
 
@@ -458,7 +544,6 @@ public class Tree<E extends Comparable<? super E>> {
      */
     public void keepRange(E a, E b) {
     }
-
     //PRIVATE
 
     /**
@@ -497,8 +582,19 @@ public class Tree<E extends Comparable<? super E>> {
         } else {
             t.right = bstInsert(x, t.right, t);
         }
-
+        updateHeights(root);
         return t;
+    }
+
+    private void updateHeights(BinaryNode node){
+        node.height = getHeight(node);
+        if (node.right == null && node.left == null){
+            return;
+        }
+        else
+            if (node.left != null){updateHeights(node.left);}
+            if (node.right != null){updateHeights(node.right);}
+
     }
 
     /**
@@ -528,6 +624,7 @@ public class Tree<E extends Comparable<? super E>> {
             return true;    // Match
         }
     }
+
     public boolean bstContains(int x){return bstContains(x, root);}
 
     /**
@@ -560,19 +657,28 @@ public class Tree<E extends Comparable<? super E>> {
         BinaryNode left;   // Left child
         BinaryNode right;  // Right child
         BinaryNode parent; //  Parent node
-        BinaryNode height;
+        int height;
 
         // Constructors
-        BinaryNode(int theElement) {
-            this(theElement, null, null, null);
-        }
+        BinaryNode(int theElement) { this(theElement, null, null, null);
+            height = 0;}
 
         BinaryNode(int theElement, BinaryNode lt, BinaryNode rt, BinaryNode pt) {
             element = theElement;
             left = lt;
             right = rt;
             parent = pt;
+            height = 0;
         }
+//        private int getHeight(BinaryNode node){
+//            int leftHeight = -1;
+//            int rightHeight = -1;
+//            if (node.left != null){leftHeight = getHeight(node.left);}
+//            if (node.right != null){rightHeight = getHeight(node.right);}
+//            if (leftHeight > rightHeight){return leftHeight + 1;}
+//            else{return rightHeight + 1;}
+//        }
+        public int getHeight(){return this.height;}
 
         public String toString() {
             StringBuilder sb = new StringBuilder();
