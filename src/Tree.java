@@ -102,7 +102,7 @@ public class Tree<E extends Comparable<? super E>> {
     }
 
     public String toString(BinaryNode node, String toReturn, String recLevel, String parentElement){
-        recLevel = recLevel + " ";
+        recLevel = recLevel + "-- ";
         if(parentElement == ""){
             parentElement = "no parent";
         }
@@ -151,9 +151,31 @@ public class Tree<E extends Comparable<? super E>> {
      */
     public String successor() {
         if (curr == null) curr = root;
-        //curr = successor(curr);
+        curr = successor(curr);
         if (curr == null) return "null";
         else return curr.toString();
+    }
+
+    public BinaryNode successor(BinaryNode node){
+        if (node.right != null){
+            BinaryNode toReturn = node.right;
+            return findMin(toReturn);
+        }
+        else{
+            BinaryNode toReturn = null;
+            BinaryNode ancestor = root;
+            while (ancestor != curr){
+                // possibly root
+                if (curr.element < ancestor.element){
+                    toReturn = ancestor;
+                    ancestor = ancestor.left;
+                }
+                else{
+                    ancestor = ancestor.right;
+                }
+            }
+            return toReturn;
+        }
     }
 
     /**
@@ -372,43 +394,31 @@ public class Tree<E extends Comparable<? super E>> {
 
         return bstContains(item, root);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Build tree given inOrder and preOrder traversals.  Each value is unique
      * @param inOrder  List of tree nodes in inorder
      * @param preOrder List of tree nodes in preorder
      */
 
-    
 
-    public void buildTreeTraversals(E[] inOrder, E[] preOrder) {
+
+
+
+
+
+
+
+    public void buildTreeTraversals(Integer[] inOrder, Integer[] preOrder) {
+
         root = null;
+
+
+
+
+
+
+
     }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -457,13 +467,6 @@ public class Tree<E extends Comparable<? super E>> {
         if (lca(root, a, b) == null){return "Both values not found in tree.";}
         else{return lca(root, a, b).element.toString();}
     }
-//
-
-
-
-
-
-
 
     /**
      * Balance the tree

@@ -2,6 +2,7 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public class Main{
 
 // Test program
@@ -76,10 +77,9 @@ final int SIZE = 8;
 //        treeA.pruneK(220);
 //        treeA.changeName("treeA after pruning 220");
 //        System.out.println(treeA.toString());
-
-        treeC.buildTreeTraversals(inorder, preorder);
-        treeC.changeName("Tree C built from inorder and preorder traversals");
-        System.out.println(treeC.toString());
+//        treeC.buildTreeTraversals(inorder, preorder);
+//        treeC.changeName("Tree C built from inorder and preorder traversals");
+//        System.out.println(treeC.toString());
 //
 //        System.out.println(tree1.toString());
 //        System.out.println("tree1 Least Common Ancestor of (56,61) " + tree1.lca(56, 61) + ENDLINE);
@@ -100,7 +100,6 @@ final int SIZE = 8;
 //        tree3.keepRange(3, 85);
 //        tree3.changeName("tree3 after keeping only nodes between 3  and 85");
 //        System.out.println(tree3.toString());
-
 
         }
 
