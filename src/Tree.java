@@ -23,6 +23,7 @@ public class Tree<E extends Comparable<? super E>> {
     private BinaryNode root;  // Root of tree
     private BinaryNode curr;  // Last node accessed in tree
     private String treeName;     // Name of tree
+    private Integer preIndex = 0;
 
     /**
      * Create an empty tree
@@ -96,7 +97,6 @@ public class Tree<E extends Comparable<? super E>> {
         if (root == null)
             return (treeName + " Empty tree\n");
         else
-//           return toString(this.root);
             System.out.println(this.treeName);
             return toString(this.root, "", "", "");
     }
@@ -217,6 +217,7 @@ public class Tree<E extends Comparable<? super E>> {
     public String countBST(){
         return countBST(root, "");
     }
+
     private String countBST(BinaryNode node, String returnString) {
         if (node == root && countBST(node, true)){returnString = returnString + node.element + " ";}
         if (node.left != null && countBST(node.left, true))//
@@ -226,6 +227,7 @@ public class Tree<E extends Comparable<? super E>> {
         }
         return returnString;
     }
+
     private Boolean countBST(BinaryNode node, Boolean isTree){
         if (node.left != null && node.left.element >= node.element || node.right != null && node.right.element
                 < node.element){
@@ -251,37 +253,40 @@ public class Tree<E extends Comparable<? super E>> {
         return findMin(minNode.left);
     }
 
-    public void remove(Integer element){
-        if (find(element, root) == null){
-            System.out.println("Value (" + element + ") does not exist in tree.");
-            return;}
-
-        else{
-            BinaryNode node = find(element, root);
-            BinaryNode parentNode = node.parent;
-            if (node.left == null && node.right == null){
-                if (parentNode.right == node){parentNode.right = null;}
-                else{parentNode.left = null;}
-            }
-            else if (node.right != null && node.left != null){
-                BinaryNode rightMin = findMin(node.right);
-                BinaryNode rightMinRep = rightMin.right;
-                node.element = rightMin.element;
-
-                if (rightMin.parent.right == rightMin){rightMin.parent.right = rightMinRep;}
-                else {rightMin.parent.right = rightMinRep;}
-            }
-
-            else if (node.left != null && node.right == null){
-                if (parentNode.left == node){parentNode.left = node.left;}
-                else{parentNode.right = node.right;}
-            }
-            else{
-                if (parentNode.left == node){parentNode.left = node.left;}
-                else{parentNode.right = node.right;}
-            }
-        }
-    }
+//    public void remove(Integer element){
+//        if (find(element, root) == null){
+//            System.out.println("Value (" + element + ") does not exist in tree.");
+//            return;}
+//
+//        else{
+//            BinaryNode node = find(element, root);
+//            if (node.parent == null){
+//
+//            }
+//            BinaryNode parentNode = node.parent;
+//            if (node.left == null && node.right == null){
+//                if (parentNode.right == node){parentNode.right = null;}
+//                else{parentNode.left = null;}
+//            }
+//            else if (node.right != null && node.left != null){
+//                BinaryNode rightMin = findMin(node.right);
+//                BinaryNode rightMinRep = rightMin.right;
+//                node.element = rightMin.element;
+//
+//                if (rightMin.parent.right == rightMin){rightMin.parent.right = rightMinRep;}
+//                else {rightMin.parent.right = rightMinRep;}
+//            }
+//
+//            else if (node.left != null && node.right == null){
+//                if (parentNode.left == node){parentNode.left = node.left;}
+//                else{parentNode.right = node.right;}
+//            }
+//            else{
+//                if (parentNode.left == node){parentNode.left = node.left;}
+//                else{parentNode.right = node.right;}
+//            }
+//        }
+//    }
 
     public BinaryNode find(int sum){return find(sum, root);}
 
@@ -301,10 +306,22 @@ public class Tree<E extends Comparable<? super E>> {
         }
     }
 
-    public void pruneK(BinaryNode node, Integer[] nodePaths, int pathLen, int limit) {
 
+//    public Integer pruneK(BinaryNode node, Integer sum, Integer k) {
+//        sum = sum + node.element;
+//        if (node.left != null){sum = pruneK(node.left, sum, k);}
+//        if (node.right != null){sum = pruneK(node.right, sum, k);}
+//        if (node.left == null && node.right == null){
+//            if (sum < k){
+//                node = null;
+//            }
+//        }
+//        else{return sum;}
+//
+//
+//
+//    }
 
-    }
     /**
      * Print all paths from root to leaves
      */
@@ -337,7 +354,6 @@ public class Tree<E extends Comparable<? super E>> {
      * Print contents of levels in zig zag order starting at maxLevel
      * @param maxLevel
      */
-
     public  void byLevelZigZag(int maxLevel){byLevelZigZag(root, maxLevel);}
 
     private void byLevelZigZag(BinaryNode node, int maxLevel){
@@ -394,49 +410,52 @@ public class Tree<E extends Comparable<? super E>> {
 
         return bstContains(item, root);
     }
-    /**
-     * Build tree given inOrder and preOrder traversals.  Each value is unique
-     * @param inOrder  List of tree nodes in inorder
-     * @param preOrder List of tree nodes in preorder
-     */
+//    /**
+//     * Build tree given inOrder and preOrder traversals.  Each value is unique
+//     * @param inOrder  List of tree nodes in inorder
+//     * @param preOrder List of tree nodes in preorder
+//     */
 
 
+    private BinaryNode buildTreeTraversals(Integer[] in, Integer[] pre, boolean isFirst){
+        if (pre.length == 0) return null;
+        BinaryNode preRoot = new BinaryNode(pre[0]);
+        if (isFirst) this.root = preRoot;
+        int inRootIndex = getIndex(in, pre[0]);
+        Integer[] inLeft = {};
+        Integer[] inRight = {};
+        Integer[] preLeft = {};
+        Integer[] preRight = {};
+        inLeft = Arrays.copyOfRange(in, 0, inRootIndex);
+        inRight = Arrays.copyOfRange(in, inRootIndex + 1, in.length);
+        preLeft = Arrays.copyOfRange(pre, 1, inLeft.length + 1);
+        preRight = Arrays.copyOfRange(pre, 1 + inLeft.length, pre.length);
 
+        preRoot.left = buildTreeTraversals(inLeft, preLeft, false);
+        preRoot.right = buildTreeTraversals(inRight, preRight, false);
 
-
-
-
-
-
-    public void buildTreeTraversals(Integer[] inOrder, Integer[] preOrder) {
-
-        root = null;
-
-
-
-
-
-
-
+        return preRoot;
     }
 
+    public int getIndex(Integer[] array, int element) {
+        for (int i=0; i < array.length; i++){
+            if (element == array[i]){
+                return i;
+            }
+        }
+        return -1;
+    }
 
+    public void test(Integer[] array){
+        Integer[] returnArray = Arrays.copyOfRange(array, 3, 7);
+        for (int i=0; i < returnArray.length; i++){
+            System.out.println(returnArray[i]);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void buildTreeTraversals(Integer[] inOrder, Integer[] preOrder) {
+        buildTreeTraversals(inOrder, preOrder, true);
+    }
 
 
     /**
@@ -599,8 +618,36 @@ public class Tree<E extends Comparable<? super E>> {
      * @param a lowest value
      * @param b highest value
      */
-    public void keepRange(E a, E b) {
+    public void keepRange(Integer a, Integer b){keepRange(root, a, b);}
+
+    public void keepRange(BinaryNode node, Integer a, Integer b) {
+        if (node.left != null){keepRange(node.left, a, b);}
+        if (node.right != null){keepRange(node.right, a, b);}
+        if (node.element < a || node.element > b){
+//            remove(node.element);
+        }
     }
+
+
+    public void remove()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //PRIVATE
 
     /**
