@@ -464,66 +464,11 @@ public class Tree<E extends Comparable<? super E>> {
         else{return lca(root, a, b).element.toString();}
     }
 
+
     /**
      * Balance the tree
+     * O(n)
      */
-    public int getHeight(){return getHeight(root);}
-
-    /**
-     * getHeight WORKS!
-     */
-    private int getHeight(BinaryNode node){
-        int leftHeight = -1;
-        int rightHeight = -1;
-        if (node.left != null){leftHeight = getHeight(node.left);}
-        if (node.right != null){rightHeight = getHeight(node.right);}
-        if (leftHeight > rightHeight){return leftHeight + 1;}
-        else{return rightHeight + 1;}
-    }
-
-    public boolean isNodeBalanced(BinaryNode node){
-//        node = root.right;
-//        if (node == null){return true;}
-        if(node.left != null && node.right != null){
-            if ((getHeight(node.left) - getHeight(node.right) > 1 ||
-                (getHeight(node.left) - getHeight(node.right) > -1))){return false;}}
-        else if(node.left == null && node.right != null){
-            if (getHeight(node.right) > 1){return false;}
-        }
-        else if(node.left != null){
-            if (getHeight(node.left) > 1) {return false;}
-        }
-        return true;
-    }
-
-    public BinaryNode singleRight(BinaryNode node){
-        BinaryNode leftNode = node.left;
-        node.left = leftNode.right;
-        leftNode.right = node;
-        node.height = getHeight(node);
-        leftNode.height = getHeight(node);
-        return leftNode;
-    }
-
-    public BinaryNode singleLeft(BinaryNode node){
-        BinaryNode rightNode = node.right;
-        node.right = rightNode.left;
-        rightNode.left = node;
-        node.height = getHeight(node);
-        rightNode.height = getHeight(node);
-        return rightNode;
-    }
-
-    public BinaryNode doubleRight(BinaryNode node){
-        node.left = singleLeft(node.left);
-        return singleRight(node);
-    }
-
-    public BinaryNode doubleLeft(BinaryNode node){
-        node.right = singleRight(node.right);
-        return singleLeft(node);
-    }
-
     public BinaryNode balanceTree(BinaryNode node){
         if (node.left == null && node.right == null){return node;}
         else if (node.left != null && node.right == null){balanceTree(node.left);}
@@ -577,12 +522,67 @@ public class Tree<E extends Comparable<? super E>> {
         return node;
     }
 
+    public int getHeight(){return getHeight(root);}
+
+    private int getHeight(BinaryNode node){
+        int leftHeight = -1;
+        int rightHeight = -1;
+        if (node.left != null){leftHeight = getHeight(node.left);}
+        if (node.right != null){rightHeight = getHeight(node.right);}
+        if (leftHeight > rightHeight){return leftHeight + 1;}
+        else{return rightHeight + 1;}
+    }
+
+    public boolean isNodeBalanced(BinaryNode node){
+//        node = root.right;
+//        if (node == null){return true;}
+        if(node.left != null && node.right != null){
+            if ((getHeight(node.left) - getHeight(node.right) > 1 ||
+                (getHeight(node.left) - getHeight(node.right) > -1))){return false;}}
+        else if(node.left == null && node.right != null){
+            if (getHeight(node.right) > 1){return false;}
+        }
+        else if(node.left != null){
+            if (getHeight(node.left) > 1) {return false;}
+        }
+        return true;
+    }
+
+    public BinaryNode singleRight(BinaryNode node){
+        BinaryNode leftNode = node.left;
+        node.left = leftNode.right;
+        leftNode.right = node;
+        node.height = getHeight(node);
+        leftNode.height = getHeight(node);
+        return leftNode;
+    }
+
+    public BinaryNode singleLeft(BinaryNode node){
+        BinaryNode rightNode = node.right;
+        node.right = rightNode.left;
+        rightNode.left = node;
+        node.height = getHeight(node);
+        rightNode.height = getHeight(node);
+        return rightNode;
+    }
+
+    public BinaryNode doubleRight(BinaryNode node){
+        node.left = singleLeft(node.left);
+        return singleRight(node);
+    }
+
+    public BinaryNode doubleLeft(BinaryNode node){
+        node.right = singleRight(node.right);
+        return singleLeft(node);
+    }
+
     public void balanceTree(){balanceTree(root);}
 
     /**
      * In a BST, keep only nodes between range
      * @param a lowest value
      * @param b highest value
+     * Complexity: O(n)
      */
     public void keepRange(Integer a, Integer b){keepRange(root, a, b);}
 
@@ -594,7 +594,13 @@ public class Tree<E extends Comparable<? super E>> {
         }
     }
 
-
+    /**
+     * Remove node from BST
+     * @param node
+     * @param element
+     * @return
+     * Complexity: O(n)
+     */
     public BinaryNode remove(BinaryNode node, int element){
 
         if (node == null) return null;
