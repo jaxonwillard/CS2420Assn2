@@ -23,7 +23,6 @@ public class Tree<E extends Comparable<? super E>> {
     private BinaryNode root;  // Root of tree
     private BinaryNode curr;  // Last node accessed in tree
     private String treeName;     // Name of tree
-    private Integer preIndex = 0;
 
     /**
      * Create an empty tree
@@ -101,6 +100,16 @@ public class Tree<E extends Comparable<? super E>> {
             return toString(this.root, "", "", "");
     }
 
+    /**
+     * Return string displaying the tree contents as a tree
+     * complexity: O(n)
+     * @param node
+     * @param toReturn
+     * @param recLevel
+     * @param parentElement
+     * @return
+     */
+
     public String toString(BinaryNode node, String toReturn, String recLevel, String parentElement){
         recLevel = recLevel + "-- ";
         if(parentElement == ""){
@@ -130,6 +139,7 @@ public class Tree<E extends Comparable<? super E>> {
 
     /**
      * reverse left and right children recursively
+     * complexity: O(n)
      */
     public void flip(){
         flip(root);
@@ -148,6 +158,7 @@ public class Tree<E extends Comparable<? super E>> {
     /**
      * Find successor of "curr" node in tree
      * @return String representation of the successor
+     * Complexity: O(n)
      */
     public String successor() {
         if (curr == null) curr = root;
@@ -182,6 +193,7 @@ public class Tree<E extends Comparable<? super E>> {
      * Counts number of nodes in specifed level
      * @param level Level in tree, root is zero
      * @return count of number of nodes at specified level
+     * O(n)
      */
     public int nodesInLevel(int level) {
         return nodesInLevel(root, level, 0, 0);
@@ -213,6 +225,7 @@ public class Tree<E extends Comparable<? super E>> {
     /**
      * Counts all non-null binary search trees embedded in tree
      * @return Count of embedded binary search trees
+     * Complexity: O(n)
      */
     public String countBST(){
         return countBST(root, "");
@@ -241,52 +254,12 @@ public class Tree<E extends Comparable<? super E>> {
         return isTree;
     }
 
-    /**
-     * Remove all paths from tree that sum to less than given value
-//     * @param sum: minimum path sum allowed in final tree
-     */
-
     public BinaryNode findMin(){return findMin(root);}
 
     public BinaryNode findMin(BinaryNode minNode){
         if (minNode.left == null){return minNode;}
         return findMin(minNode.left);
     }
-
-//    public void remove(Integer element){
-//        if (find(element, root) == null){
-//            System.out.println("Value (" + element + ") does not exist in tree.");
-//            return;}
-//
-//        else{
-//            BinaryNode node = find(element, root);
-//            if (node.parent == null){
-//
-//            }
-//            BinaryNode parentNode = node.parent;
-//            if (node.left == null && node.right == null){
-//                if (parentNode.right == node){parentNode.right = null;}
-//                else{parentNode.left = null;}
-//            }
-//            else if (node.right != null && node.left != null){
-//                BinaryNode rightMin = findMin(node.right);
-//                BinaryNode rightMinRep = rightMin.right;
-//                node.element = rightMin.element;
-//
-//                if (rightMin.parent.right == rightMin){rightMin.parent.right = rightMinRep;}
-//                else {rightMin.parent.right = rightMinRep;}
-//            }
-//
-//            else if (node.left != null && node.right == null){
-//                if (parentNode.left == node){parentNode.left = node.left;}
-//                else{parentNode.right = node.right;}
-//            }
-//            else{
-//                if (parentNode.left == node){parentNode.left = node.left;}
-//                else{parentNode.right = node.right;}
-//            }
-//        }
-//    }
 
     public BinaryNode find(int sum){return find(sum, root);}
 
@@ -306,24 +279,30 @@ public class Tree<E extends Comparable<? super E>> {
         }
     }
 
+    /**
+     * Remove all paths from tree that sum to less than given value
+     * @param k: minimum path sum allowed in final tree
+     * Complexity: O(n)
+     */
+    public void pruneK(Integer k){pruneK(root, k);}
 
-//    public Integer pruneK(BinaryNode node, Integer sum, Integer k) {
-//        sum = sum + node.element;
-//        if (node.left != null){sum = pruneK(node.left, sum, k);}
-//        if (node.right != null){sum = pruneK(node.right, sum, k);}
-//        if (node.left == null && node.right == null){
-//            if (sum < k){
-//                node = null;
-//            }
-//        }
-//        else{return sum;}
-//
-//
-//
-//    }
+    public BinaryNode pruneK(BinaryNode node, Integer k) {
+        if (node == null){return null;}
+
+        node.left = pruneK(node.left, k - node.element);
+        node.right = pruneK(node.right, k - node.element);
+
+        if (node.left == null && node.right == null){
+            if (k > node.element){
+                node = null;
+            }
+        }
+        return node;
+    }
 
     /**
      * Print all paths from root to leaves
+     * Complexity: O(n)
      */
     public void printAllPaths() {
         int[] nodePaths = new int[9000];
@@ -353,6 +332,7 @@ public class Tree<E extends Comparable<? super E>> {
     /**
      * Print contents of levels in zig zag order starting at maxLevel
      * @param maxLevel
+     *  Complexity: O(n)
      */
     public  void byLevelZigZag(int maxLevel){byLevelZigZag(root, maxLevel);}
 
@@ -395,6 +375,7 @@ public class Tree<E extends Comparable<? super E>> {
     /**
      * Insert into a bst tree; duplicates are allowed
      * @param x the item to insert.
+     * Complexity: O(log n)
      */
     private void bstInsert(int x) {
 
@@ -405,16 +386,18 @@ public class Tree<E extends Comparable<? super E>> {
      * Determines if item is in tree
      * @param item the item to search for.
      * @return true if found.
+     * Complexity: O(log n)
      */
     public boolean contains(int item) {
 
         return bstContains(item, root);
     }
-//    /**
-//     * Build tree given inOrder and preOrder traversals.  Each value is unique
-//     * @param inOrder  List of tree nodes in inorder
-//     * @param preOrder List of tree nodes in preorder
-//     */
+    /**
+     * Build tree given inOrder and preOrder traversals.  Each value is unique
+     * @param in  List of tree nodes in inorder
+     * @param pre List of tree nodes in preorder
+     * Complexity: O(n)
+     */
 
 
     private BinaryNode buildTreeTraversals(Integer[] in, Integer[] pre, boolean isFirst){
@@ -446,13 +429,6 @@ public class Tree<E extends Comparable<? super E>> {
         return -1;
     }
 
-    public void test(Integer[] array){
-        Integer[] returnArray = Arrays.copyOfRange(array, 3, 7);
-        for (int i=0; i < returnArray.length; i++){
-            System.out.println(returnArray[i]);
-        }
-    }
-
     public void buildTreeTraversals(Integer[] inOrder, Integer[] preOrder) {
         buildTreeTraversals(inOrder, preOrder, true);
     }
@@ -463,6 +439,7 @@ public class Tree<E extends Comparable<? super E>> {
      * @param a first node
      * @param b second node
      * @return String representation of ancestor
+     * Complexity: O(log n)
      */
     private BinaryNode lca(BinaryNode node, Integer a, Integer b) {
 //        if (!(bstContains(a)) && !(bstContains(b))){return null;}
@@ -602,17 +579,6 @@ public class Tree<E extends Comparable<? super E>> {
 
     public void balanceTree(){balanceTree(root);}
 
-
-
-
-
-
-
-
-
-
-
-
     /**
      * In a BST, keep only nodes between range
      * @param a lowest value
@@ -624,12 +590,35 @@ public class Tree<E extends Comparable<? super E>> {
         if (node.left != null){keepRange(node.left, a, b);}
         if (node.right != null){keepRange(node.right, a, b);}
         if (node.element < a || node.element > b){
-//            remove(node.element);
+            remove(root, node.element);
         }
     }
 
 
-    public void remove()
+    public BinaryNode remove(BinaryNode node, int element){
+
+        if (node == null) return null;
+
+        if (element < node.element){
+            node.left = remove(node.left, element);
+        }
+        else if (element > node.element){
+            node.right = remove(node.right, element);
+        }
+
+        else{
+            if (node.left == null){
+                return node.right;
+            }
+        else if (node.right == null){
+            return node.left;
+            }
+        node.element = findMin(node.right).element;
+        }
+        node.right = remove(node.right, node.element);
+        return node;
+
+    }
 
 
 

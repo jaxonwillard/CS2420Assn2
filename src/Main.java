@@ -40,10 +40,10 @@ final int SIZE = 8;
 //
 //        System.out.println(tree1.toString2());
 //
-//        System.out.println(treeA.toString());
+        System.out.println(treeA.toString());
 //
-//        treeA.flip();
-//        System.out.println("Now flipped" + treeA.toString());
+        treeA.flip();
+        System.out.println("Now flipped\n" + treeA.toString());
 //
 //        System.out.println(tree2.toString());
 //        tree2.contains(val);  //Sets the current node inside the tree6 class.
@@ -71,9 +71,12 @@ final int SIZE = 8;
 //        System.out.println(treeB.toString());
 //        System.out.println("treeB Contains BST: " + treeB.countBST());
 
+
+//        System.out.println(treeB.toString());
 //        treeB.pruneK(60);
 //        treeB.changeName("treeB after pruning 60");
 //        System.out.println(treeB.toString());
+//        System.out.println(treeA.toString());
 //        treeA.pruneK(220);
 //        treeA.changeName("treeA after pruning 220");
 //        System.out.println(treeA.toString());
@@ -95,13 +98,15 @@ final int SIZE = 8;
 //        tree3.changeName("tree3 after balancing");
 //        System.out.println(tree3.toString());
 
-        System.out.println(tree1.toString());
-        tree1.keepRange(10, 50);
-        tree1.changeName("tree1 after keeping only nodes between 10 and 50");
-        System.out.println(tree1.toString());
-        tree3.keepRange(3, 85);
-        tree3.changeName("tree3 after keeping only nodes between 3  and 85");
-        System.out.println(tree3.toString());
+//        System.out.println(tree1.toString());
+//        tree1.keepRange(10, 50);
+//        tree1.changeName("tree1 after keeping only nodes between 10 and 50");
+//        System.out.println(tree1.toString());
+//        System.out.println("--------------------------------\n");
+//        System.out.println(tree3.toString());
+//        tree3.keepRange(3, 85);
+//        tree3.changeName("tree3 after keeping only nodes between 3  and 85");
+//        System.out.println(tree3.toString());
 
         }
 
